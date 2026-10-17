@@ -1,5 +1,5 @@
 // 共用的頁首與頁尾：改這裡，所有頁面都會一起更新
-const SITE_NAME = "YourName";
+const SITE_NAME = "Maido";
 
 const NAV = [
   { href: "index.html", zh: "首頁", en: "Main" },
