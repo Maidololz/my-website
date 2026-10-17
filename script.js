@@ -30,8 +30,17 @@ function renderHeader() {
     <nav class="nav container">
       <a href="index.html" class="logo">${SITE_NAME}</a>
       <ul class="nav-links">${links}</ul>
-      <div>
+      <div class="nav-actions">
         <button class="lang-toggle" type="button">中文 / ENG</button>
+        <button class="theme-toggle" type="button" aria-label="切換明暗模式">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4.5" fill="currentColor"/>
+            <path d="M12 1.5v2.5M12 20v2.5M1.5 12H4M20 12h2.5M4.6 4.6l1.8 1.8M17.6 17.6l1.8 1.8M4.6 19.4l1.8-1.8M17.6 6.4l1.8-1.8"/>
+          </svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/>
+          </svg>
+        </button>
         <button class="menu-btn" type="button" aria-label="Menu">☰</button>
       </div>
     </nav>`;
@@ -39,6 +48,10 @@ function renderHeader() {
   document.querySelector(".lang-toggle").addEventListener("click", () => {
     setLang(document.documentElement.lang === "en" ? "zh-Hant" : "en");
   });
+  document.querySelector(".theme-toggle").addEventListener("click", () => {
+    setTheme(isDark() ? "light" : "dark");
+  });
+  updateThemeButton();
   document.querySelector(".menu-btn").addEventListener("click", () => {
     document.querySelector(".nav-links").classList.toggle("open");
   });
@@ -66,6 +79,31 @@ function initLang() {
   setLang(lang);
 }
 
+const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+function isDark() {
+  const theme = document.documentElement.dataset.theme;
+  return theme ? theme === "dark" : systemDark.matches;
+}
+
+function updateThemeButton() {
+  const btn = document.querySelector(".theme-toggle");
+  if (btn) btn.classList.toggle("is-dark", isDark());
+}
+
+function setTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  try { localStorage.setItem("theme", theme); } catch (e) {}
+  updateThemeButton();
+}
+
+function initTheme() {
+  let theme = null;
+  try { theme = localStorage.getItem("theme"); } catch (e) {}
+  if (theme) document.documentElement.dataset.theme = theme;
+  systemDark.addEventListener("change", updateThemeButton);
+}
+
 function initFadeIn() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
@@ -79,6 +117,7 @@ function initFadeIn() {
 }
 
 initLang();
+initTheme();
 renderHeader();
 renderFooter();
 initFadeIn();

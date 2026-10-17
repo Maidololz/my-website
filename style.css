@@ -8,8 +8,9 @@
   --max: 720px;
 }
 
+/* 沒按過切換鈕時跟隨系統；按過之後以 data-theme 為準 */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --bg: #1b1917;
     --surface: #24211e;
     --text: #ece6df;
@@ -18,6 +19,16 @@
     --line: #38332e;
   }
 }
+:root[data-theme="dark"] {
+  --bg: #1b1917;
+  --surface: #24211e;
+  --text: #ece6df;
+  --muted: #a39a91;
+  --accent: #e58a5f;
+  --line: #38332e;
+}
+
+body { transition: background-color .3s ease, color .3s ease; }
 
 * { box-sizing: border-box; }
 
@@ -92,6 +103,38 @@ header {
   cursor: pointer;
   white-space: nowrap;
 }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- 日月切換 ---------- */
+.theme-toggle {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: 50%;
+  cursor: pointer;
+  overflow: hidden;
+  padding: 0;
+}
+.theme-toggle svg {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 18px;
+  height: 18px;
+  transition: transform .5s ease, opacity .3s ease;
+}
+.theme-toggle .sun { color: #e8a33d; }
+.theme-toggle .moon { color: #f2d98a; opacity: 0; transform: rotate(-90deg) scale(.4); }
+.theme-toggle.is-dark .sun { opacity: 0; transform: rotate(90deg) scale(.4); }
+.theme-toggle.is-dark .moon { opacity: 1; transform: none; }
 
 .menu-btn {
   display: none;
